@@ -1,0 +1,7 @@
+namespace: prod-makex
+
+bases:
+- ../../base
+
+patchesStrategicMerge:
+- deploy.yaml

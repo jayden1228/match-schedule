@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: match-schedule
+spec:
+  gateways:
+  - gateway/grpc-gateway
+  hosts:
+  - "match-schedule-dev.makeblock.com"
+  http:
+  - route:
+    - destination:
+        host: match-schedule
+        port:
+          number: 8000
+        subset: v1

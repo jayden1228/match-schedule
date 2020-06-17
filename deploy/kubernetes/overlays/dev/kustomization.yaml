@@ -1,0 +1,10 @@
+namespace: dev-makex
+
+bases:
+- ../../base
+
+resources:
+- virtual-service.yaml
+
+patchesStrategicMerge:
+- deploy.yaml
