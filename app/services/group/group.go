@@ -1,6 +1,8 @@
 package group
 
-import "match-schedule/pkg/constant"
+import (
+	"match-schedule/pkg/constant"
+)
 
 // GenGroups
 // @playerNum
@@ -22,6 +24,7 @@ func GenSinglePlayerGroups(playerNum int, roundNum int) [][]int {
 	if playerNum*roundNum%2 != 0 || playerNum < roundNum*2 {
 		return nil
 	}
+
 	return nil
 }
 
