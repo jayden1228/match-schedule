@@ -1,4 +1,4 @@
-package group
+package field
 
 import (
 	"fmt"
@@ -13,11 +13,11 @@ func Test_CombinationSum(t *testing.T) {
 	fmt.Println(result)
 }
 
-func Test_GenGroups(t *testing.T) {
-	maxFieldCapacity := 20
-	minFieldCapacity := 10
+func Test_GenFields(t *testing.T) {
+	minFieldCapacity := 15
+	maxFieldCapacity := 18
 	playerNum := 50
 	fieldNum := 3
-	groups, _ := GenGroups(playerNum, 2, fieldNum, maxFieldCapacity, minFieldCapacity)
+	groups, _ := GenFields(playerNum, fieldNum, maxFieldCapacity, minFieldCapacity)
 	fmt.Println(groups)
 }
