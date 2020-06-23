@@ -7,7 +7,7 @@ import (
 
 func TestDoubleCompetition_PlayerCompilation(t *testing.T) {
 	s := DoubleCompetition{
-		PlayerNum: 1000,
+		PlayerNum: 100,
 		RoundNum:  4,
 	}
 

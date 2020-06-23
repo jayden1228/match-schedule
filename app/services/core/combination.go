@@ -1,4 +1,4 @@
-package dfs
+package core
 
 // CombinationSum 从数组中选中N个数求和，满足 candidates[m] + ... candidates[n] = target
 // @candidates 元素数组

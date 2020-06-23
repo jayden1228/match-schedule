@@ -2,7 +2,6 @@ package core
 
 import (
 	"errors"
-	"match-schedule/app/services/core/dfs"
 	"match-schedule/pkg/constant"
 	"math"
 )
@@ -14,7 +13,6 @@ const (
 
 type genFieldsOption struct {
 	Amplitude int
-	Mode      int
 }
 
 type GenFieldsOption interface {
@@ -41,16 +39,9 @@ func WithAmplitude(s int) GenFieldsOption {
 	})
 }
 
-func WithMode(s int) GenFieldsOption {
-	return newFuncOption(func(o *genFieldsOption) {
-		o.Mode = s
-	})
-}
-
 func defaultOptions() genFieldsOption {
 	return genFieldsOption{
 		Amplitude: amplitude,
-		Mode:      constant.SingleMode,
 	}
 }
 
@@ -60,8 +51,7 @@ func defaultOptions() genFieldsOption {
 // @roundNum 回合数
 // @opts 可选参数
 // 		Amplitude 表示每个场地人数偏离平均值的幅度, 默认 amplitude = 2, 使用withAmplitude修改默认设置
-//		Mode 	  表示单人/双人比赛， 默认 mode = singleMode【1】
-func GenFields(playerNum int, fieldNum int, roundNum int, opts ...GenFieldsOption) ([]int, error) {
+func GenFields(playerNum int, fieldNum int, roundNum int, mode int, opts ...GenFieldsOption) ([]int, error) {
 	if playerNum <= 0 || fieldNum <= 0 {
 		return nil, errors.New(constant.ErrPlayerNumNotMatchFieldAndRound)
 	}
@@ -80,9 +70,9 @@ func GenFields(playerNum int, fieldNum int, roundNum int, opts ...GenFieldsOptio
 		fieldCapacityList = append(fieldCapacityList, i)
 	}
 
-	fields := dfs.CombinationSum(fieldCapacityList, playerNum, startDeep, fieldNum)
+	fields := CombinationSum(fieldCapacityList, playerNum, startDeep, fieldNum)
 
-	fields = filterField(fields, roundNum, genFieldsOption.Mode)
+	fields = filterField(fields, roundNum, mode)
 
 	field := OptimalFieldChoice(fields, playerNum, fieldNum)
 
