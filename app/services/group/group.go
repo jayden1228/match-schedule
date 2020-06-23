@@ -15,7 +15,6 @@ func GenGroups(playerNum int, fieldNum int, roundNum int, mode int) ([][][]int, 
 	if err := validateInput(playerNum, roundNum, mode); err != nil {
 		return nil, err
 	}
-
 	// 分场地
 	fields, err := core.GenFields(playerNum, fieldNum, roundNum, core.WithAmplitude(3), core.WithMode(mode))
 	if err != nil {
