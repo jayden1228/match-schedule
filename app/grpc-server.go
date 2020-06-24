@@ -1,9 +1,9 @@
 package app
 
 import (
+	"log"
 	"match-schedule/app/handlers"
 	"match-schedule/proto"
-	"log"
 	"net"
 
 	"google.golang.org/grpc"
@@ -13,7 +13,7 @@ import (
 // RunServer with port
 func RunServer(port string) {
 	s := grpc.NewServer()
-	proto.RegisterDemoServiceServer(s, &handlers.GrpcServer{})
+	proto.RegisterMatchServiceServer(s, &handlers.GrpcServer{})
 	reflection.Register(s)
 
 	go func() {

@@ -12,7 +12,7 @@ const (
 )
 
 type genFieldsOption struct {
-	Amplitude int
+	Amplitude int32
 }
 
 type GenFieldsOption interface {
@@ -33,7 +33,7 @@ func newFuncOption(f func(*genFieldsOption)) *funcOption {
 	}
 }
 
-func WithAmplitude(s int) GenFieldsOption {
+func WithAmplitude(s int32) GenFieldsOption {
 	return newFuncOption(func(o *genFieldsOption) {
 		o.Amplitude = s
 	})
@@ -51,7 +51,7 @@ func defaultOptions() genFieldsOption {
 // @roundNum 回合数
 // @opts 可选参数
 // 		Amplitude 表示每个场地人数偏离平均值的幅度, 默认 amplitude = 2, 使用withAmplitude修改默认设置
-func GenFields(playerNum int, fieldNum int, roundNum int, mode int, opts ...GenFieldsOption) ([]int, error) {
+func GenFields(playerNum int32, fieldNum int32, roundNum int32, mode int32, opts ...GenFieldsOption) ([]int32, error) {
 	if playerNum <= 0 || fieldNum <= 0 {
 		return nil, errors.New(constant.ErrPlayerNumNotMatchFieldAndRound)
 	}
@@ -65,7 +65,7 @@ func GenFields(playerNum int, fieldNum int, roundNum int, mode int, opts ...GenF
 	maxFieldCapacity := playerNum/fieldNum + genFieldsOption.Amplitude
 	minFieldCapacity := playerNum/fieldNum - genFieldsOption.Amplitude
 
-	var fieldCapacityList []int
+	var fieldCapacityList []int32
 	for i := minFieldCapacity; i <= maxFieldCapacity; i++ {
 		fieldCapacityList = append(fieldCapacityList, i)
 	}
@@ -83,11 +83,11 @@ func GenFields(playerNum int, fieldNum int, roundNum int, mode int, opts ...GenF
 // @fields 场地数
 // @roundNum 回合
 // @mode 单人/双人
-func filterField(fields [][]int, roundNum int, mode int) [][]int {
+func filterField(fields [][]int32, roundNum int32, mode int32) [][]int32 {
 restart:
 	odd := mode * 2
 	for i, v := range fields {
-		if len(v)*roundNum%odd != 0 {
+		if int32(len(v))*roundNum%odd != 0 {
 			fields = append(fields[:i], fields[i+1:]...)
 			goto restart
 		}
@@ -97,14 +97,14 @@ restart:
 
 // OptimalFieldChoice 选择最接近平均场次的分配
 // 平方差求和最小值为最拟合平均
-func OptimalFieldChoice(fields [][]int, playerNum int, fieldNum int) []int {
+func OptimalFieldChoice(fields [][]int32, playerNum int32, fieldNum int32) []int32 {
 	averageField := playerNum / fieldNum
-	minVariance := 99999
+	minVariance := int32(99999)
 	minVarianceIndex := 0
 	for i, v := range fields {
-		var variance int
+		var variance int32
 		for _, d := range v {
-			variance = variance + int(math.Pow(float64(d-averageField), 2))
+			variance = variance + int32(math.Pow(float64(d-averageField), 2))
 		}
 		if variance < minVariance {
 			minVariance = variance

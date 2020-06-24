@@ -11,7 +11,7 @@ import (
 // @roundNum
 // @fieldNum
 // @mode 单人/双人
-func GenGroups(playerNum int, fieldNum int, roundNum int, mode int, opts ...core.GenFieldsOption) ([][][]int, error) {
+func GenGroups(playerNum int32, fieldNum int32, roundNum int32, mode int32, opts ...core.GenFieldsOption) ([][][]int32, error) {
 	if err := validateInput(playerNum, roundNum, mode); err != nil {
 		return nil, err
 	}
@@ -21,7 +21,7 @@ func GenGroups(playerNum int, fieldNum int, roundNum int, mode int, opts ...core
 		return nil, err
 	}
 	// 生成各场地分组
-	var groups [][][]int
+	var groups [][][]int32
 	for _, v := range fields {
 		s := core.SingleCompetition{
 			PlayerNum: v,
@@ -37,7 +37,7 @@ func GenGroups(playerNum int, fieldNum int, roundNum int, mode int, opts ...core
 	return groups, nil
 }
 
-func validateInput(playerNum int, roundNum int, mode int) error {
+func validateInput(playerNum int32, roundNum int32, mode int32) error {
 	switch mode {
 	case constant.SingleMode:
 		if playerNum*roundNum%2 != 0 || playerNum < roundNum*2 {

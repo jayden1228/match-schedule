@@ -2,9 +2,9 @@ package model
 
 //BaseModel BaseModel
 type BaseModel struct {
-	ID        int64 `gorm:"primary_key;AUTO_INCREMENT;column:id" json:"-"`
-	CreatedAt int64 `gorm:"column:created_at" json:"-"`
-	UpdatedAt int64 `gorm:"column:updated_at" json:"-"`
+	ID        int64 `gorm:"primary_key;AUTO_INCREMENT;column:id"`
+	CreatedAt int64 `gorm:"column:created_at"`
+	UpdatedAt int64 `gorm:"column:updated_at"`
 }
 
 //APIResponse APIResponse

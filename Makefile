@@ -15,11 +15,13 @@ fmt:
 utest:
 	go mod tidy; \
 	go test -coverpkg=./... -coverprofile=coverage.data ./...;
+lint:
+	golangci-lint run -c .golangci.yml;
 protoc:
 	protoc -I/usr/local/include -I. \
 	-I${GOPATH}/src \
 	--go_out=plugins=grpc:. \
-	proto/demo.proto
+	proto/match-schedule.proto
 build:
 	go mod tidy; \
 	cd deploy/docker;  \

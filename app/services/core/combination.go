@@ -5,13 +5,13 @@ package core
 // @target     求和
 // @curDep     当前搜索深度
 // @tarDep     目标搜索深度
-func CombinationSum(candidates []int, target int, curDeep int, tarDeep int) [][]int {
-	comb := make([][]int, 0)
+func CombinationSum(candidates []int32, target int32, curDeep int32, tarDeep int32) [][]int32 {
+	comb := make([][]int32, 0)
 	if curDeep <= tarDeep {
 		for i := range candidates {
 			if candidates[i] == target {
 				if curDeep == tarDeep {
-					comb = append(comb, []int{candidates[i]})
+					comb = append(comb, []int32{candidates[i]})
 					break
 				}
 			} else if candidates[i] < target {
@@ -20,7 +20,7 @@ func CombinationSum(candidates []int, target int, curDeep int, tarDeep int) [][]
 					if len(rtn[j]) == 0 {
 						continue
 					}
-					comb = append(comb, append([]int{candidates[i]}, rtn[j]...))
+					comb = append(comb, append([]int32{candidates[i]}, rtn[j]...))
 				}
 			} else {
 				break

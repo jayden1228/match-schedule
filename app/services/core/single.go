@@ -9,33 +9,33 @@ import (
 )
 
 type SingleCompetition struct {
-	PlayerNum int
-	RoundNum  int
+	PlayerNum int32
+	RoundNum  int32
 }
 
 // PlayerCompilation
 // @playerNum 选手人数
 // @roundNum 回合数
-func (s *SingleCompetition) PlayerCompilation() ([][]int, error) {
+func (s *SingleCompetition) PlayerCompilation() ([][]int32, error) {
 RETRY:
 	// 选手池
-	playerPool := make([]int, s.PlayerNum)
-	for i := 1; i <= s.PlayerNum; i++ {
+	playerPool := make([]int32, s.PlayerNum)
+	for i := int32(1); i <= s.PlayerNum; i++ {
 		playerPool[i-1] = i
 	}
 	// 对战历史池
-	var historyPlayerPairsPool [][2]int
+	var historyPlayerPairsPool [][2]int32
 	// 孤儿选手
-	var alonePlayerPool []int
+	var alonePlayerPool []int32
 	// 轮数存储
-	rounds := make([][]int, s.RoundNum)
+	rounds := make([][]int32, s.RoundNum)
 	// 人数规则
 	if s.PlayerNum*s.RoundNum%2 != 0 {
 		return nil, errors.New(constant.ErrPlayerNumNotMatchRound)
 	}
 	// 遍历生成多轮赛事
-	for i := 1; i <= s.RoundNum; i++ {
-		var round []int
+	for i := int32(1); i <= s.RoundNum; i++ {
+		var round []int32
 		c, p := s.playerRoundCompilation(playerPool, historyPlayerPairsPool)
 		if p != 0 {
 			alonePlayerPool = append(alonePlayerPool, p)
@@ -62,14 +62,14 @@ RETRY:
 // playerRoundCompilation 单场单轮对战
 // @playerPool     选手池
 // @competitorPool 对手池, 已分配过的对手，添加到该池子
-func (s *SingleCompetition) playerRoundCompilation(playerPool []int, competitorPool [][2]int) ([]int, int) {
-	var result []int
-	var alonePlayer int
-	pool := make([]int, len(playerPool))
+func (s *SingleCompetition) playerRoundCompilation(playerPool []int32, competitorPool [][2]int32) ([]int32, int32) {
+	var result []int32
+	var alonePlayer int32
+	pool := make([]int32, len(playerPool))
 	copy(pool, playerPool)
 	count := len(pool) / 2
 	for count > 0 {
-		var c []int
+		var c []int32
 		c, pool = s.pairPlayer(pool, competitorPool)
 		result = append(result, c...)
 		count--
@@ -83,15 +83,15 @@ func (s *SingleCompetition) playerRoundCompilation(playerPool []int, competitorP
 // pairPlayer 单场地单轮一组选手
 // @playerPool     选手池
 // @competitorPool 对手池, 已分配过的对手，添加到该池子
-func (s *SingleCompetition) pairPlayer(pool []int, competitorPool [][2]int) ([]int, []int) {
-	var result []int
+func (s *SingleCompetition) pairPlayer(pool []int32, competitorPool [][2]int32) ([]int32, []int32) {
+	var result []int32
 	for len(result) == 0 {
-		var a, b int
+		var a, b int32
 		a, pool = s.getRandomPlayer(pool)
 		b, pool = s.getRandomPlayer(pool)
-		if !s.existPairs([2]int{a, b}, competitorPool) {
+		if !s.existPairs([2]int32{a, b}, competitorPool) {
 			result = append(result, a, b)
-			competitorPool = append(competitorPool, [2]int{a, b})
+			competitorPool = append(competitorPool, [2]int32{a, b})
 		}
 	}
 	return result, pool
@@ -99,7 +99,7 @@ func (s *SingleCompetition) pairPlayer(pool []int, competitorPool [][2]int) ([]i
 
 // isRepeatAlonePlayer 是否有重复孤儿选手
 // @alonePlayerPool 孤儿选手池
-func (s *SingleCompetition) isRepeatAlonePlayer(alonePlayerPool []int) bool {
+func (s *SingleCompetition) isRepeatAlonePlayer(alonePlayerPool []int32) bool {
 	result := false
 	for i := 0; i < len(alonePlayerPool); i++ {
 		for j := i + 1; j < len(alonePlayerPool); j++ {
@@ -114,7 +114,7 @@ func (s *SingleCompetition) isRepeatAlonePlayer(alonePlayerPool []int) bool {
 
 // getRandomPlayer 随机获取一个选手
 // @playerPool 选手池
-func (s *SingleCompetition) getRandomPlayer(playerPool []int) (int, []int) {
+func (s *SingleCompetition) getRandomPlayer(playerPool []int32) (int32, []int32) {
 	rand.Seed(time.Now().UTC().UnixNano())
 	length := len(playerPool)
 	index := rand.Intn(length)
@@ -126,7 +126,7 @@ func (s *SingleCompetition) getRandomPlayer(playerPool []int) (int, []int) {
 // existPairs 判断是否存在相同的匹配队友
 // @pair 一组选手
 // @competitorPool 对手池
-func (s *SingleCompetition) existPairs(pair [2]int, competitorPool [][2]int) bool {
+func (s *SingleCompetition) existPairs(pair [2]int32, competitorPool [][2]int32) bool {
 	for _, v := range competitorPool {
 		if (v[0] == pair[0] && v[1] == pair[1]) || (v[0] == pair[1] && v[1] == pair[0]) {
 			return true
