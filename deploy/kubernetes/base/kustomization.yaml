@@ -1,5 +1,0 @@
-commonLabels:
-  app: match-schedule
-
-resources:
-- deploy.yaml

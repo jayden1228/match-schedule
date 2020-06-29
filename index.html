@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>match-schedule</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="layui/css/layui.css"  media="all">
+</head>
+<body>
+<style>
+  input, select {
+    margin: 10px;
+  }
+  body {
+    margin: 20px;
+  }
+</style>
+<div>
+  playNum：<input  id="playNum"/> <br>
+  fieldNum: <input id="fieldNum"/> <br>
+  roundNum :<input id="roundNum"/> <br>
+  <select id="mode">
+    <option value="1">单人</option>
+    <option value="2">双人</option>
+  </select>
+</div>
+<div class="content">
+  <button type="button" class="genButton">生成赛事</button>
+  <div class="match-table"></div>
+</div>
+
+<script src="jquery.min.js"></script>
+<script src="layui/layui.js" charset="utf-8"></script>
+<script>
+// 导出layui table组件
+let table;
+layui.use('table', function(){
+    table = layui.table;
+});
+
+// 生成赛事触发
+$(".genButton").click(function(){
+  // 获取请求参数，带默认参数
+  let playerNum = $("#playNum").val() || 10;
+  let roundNum = $("#roundNum").val() || 1;
+  let fieldNum = $("#fieldNum").val() || 1;
+  let mode = $("#mode").val() || 1;
+  // 请求服务器
+  $.ajax({
+    url:`http://127.0.0.1:8080/schedule?playerNum=${playerNum}&fieldNum=${fieldNum}&roundNum=${roundNum}&mode=${mode}`,
+    success:function(result){
+      if(result.code === 0) {
+          scheduleHandle(result.data, mode);
+      } else {
+        alert(result.message);
+      }
+    }});
+});
+
+function scheduleHandle(input, mode) {
+  $(".match-table").empty();
+  let fields = input;
+  for (let i=0;i<fields.length;i++) {
+    let tableElement = `<h1>场地-${i+1}</h1><talbe class="field-${i}"></talbe>`;
+    $(".match-table").append(tableElement);
+    let cols = [];
+    let datas = [];
+    // 构建所有轮对战数组
+    /*
+        datas = [
+          round1 : "1 vs 2",
+          round1 : "3 vs 4",
+          round2 : "1 vs 3",
+          round2 : "2 vs 4"
+        ]
+     */
+    for (let j=0;j<fields[i].length;j++) {
+      let col = {};
+      col.field = "round" + (j + 1) ;
+      col.title = "round" + (j + 1);
+      cols.push(col);
+      let step = mode * 2
+      for (let k=0;k<fields[i][j].length;k+=step) {
+        let key = "round" + (j + 1);
+        let value;
+        let numLength = -5;
+        if (mode == 1) {
+          let p1 = ("00000" + fields[i][j][k]).slice(numLength);
+          let p2 = ("00000" + fields[i][j][k]+1).slice(numLength);
+          value = `${p1} vs ${p2}`;
+        }else {
+          let p1 =  ("00000" + fields[i][j][k]).slice(numLength);
+          let p2 =  ("00000" + fields[i][j][k]+1).slice(numLength);
+          let p3 =  ("00000" + fields[i][j][k]+2).slice(numLength);
+          let p4 =  ("00000" + fields[i][j][k]+3).slice(numLength);
+
+          value = `${p1},${p2} vs ${p3},${p4}`;
+        }
+        let data = {};
+        data[key] = value;
+        datas.push(data);
+      }
+    }
+    // 计算行数
+    let rounds = fields[i].length;
+    let counts = [];
+    for (let n=0;n<rounds;n++) {
+      let count = 0;
+      for (let m=0;m<datas.length;m++) {
+        if ("round" + (n + 1) in datas[m]) {
+          count++;
+        }
+      }
+      counts.push(count);
+    }
+    let maxRound = Math.max.apply(Math, counts);
+    // 构建行数据
+    let rows = [];
+    for(let i=0;i<maxRound;i++){
+      let key = "";
+      let row = {};
+      let delIndex = [];
+      let tempDatas = [...datas];
+      for (let j=0;j<tempDatas.length;j++) {
+        if (Object.keys(tempDatas[j])[0] !== key) {
+          row[Object.keys(tempDatas[j])[0]] = tempDatas[j][Object.keys(tempDatas[j])[0]];
+          key = Object.keys(tempDatas[j])[0];
+          delIndex.push(j);
+        }
+      }
+      for (let k=delIndex.length-1;k>=0;k--){
+        let index = delIndex[k];
+        datas.splice(index, 1);
+      }
+      rows.push(row);
+    }
+    // 根据场地创建多个表
+    let tableTag = `.field-${i}`;
+    console.log(tableTag, cols, rows);
+    table.render({
+      elem: tableTag,
+      cellMinWidth: 80,
+      cols: [cols],
+      data: rows,
+      page: true
+  });
+  }
+}
+
+</script>
+<script></script>
+</body>
+</html>

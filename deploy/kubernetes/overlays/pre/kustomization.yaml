@@ -1,7 +1,0 @@
-namespace: pre-makex
-
-bases:
-- ../../base
-
-patchesStrategicMerge:
-- deploy.yaml
