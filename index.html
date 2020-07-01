@@ -49,17 +49,18 @@ $(".genButton").click(function(){
   let mode = $("#mode").val() || 1;
   // 请求服务器
   $.ajax({
+    // url:`http://match-schedule-dev.makeblock.com/schedule?playerNum=${playerNum}&fieldNum=${fieldNum}&roundNum=${roundNum}&mode=${mode}`,
     url:`http://127.0.0.1:8080/schedule?playerNum=${playerNum}&fieldNum=${fieldNum}&roundNum=${roundNum}&mode=${mode}`,
     success:function(result){
       if(result.code === 0) {
-          scheduleHandle(result.data, mode);
+          scheduleHandle(result.data, mode, playerNum);
       } else {
         alert(result.message);
       }
     }});
 });
 
-function scheduleHandle(input, mode) {
+function scheduleHandle(input, mode, playerNum) {
   $(".match-table").empty();
   let fields = input;
   for (let i=0;i<fields.length;i++) {
@@ -85,16 +86,17 @@ function scheduleHandle(input, mode) {
       for (let k=0;k<fields[i][j].length;k+=step) {
         let key = "round" + (j + 1);
         let value;
-        let numLength = -5;
+        let numLength = playerNum.toString().length;;
+        let numTemplate = "0".repeat(numLength);
         if (mode == 1) {
-          let p1 = ("00000" + fields[i][j][k]).slice(numLength);
-          let p2 = ("00000" + fields[i][j][k]+1).slice(numLength);
+          let p1 = (numTemplate + fields[i][j][k]).slice(-numLength);
+          let p2 = (numTemplate + fields[i][j][k+1]).slice(-numLength);
           value = `${p1} vs ${p2}`;
         }else {
-          let p1 =  ("00000" + fields[i][j][k]).slice(numLength);
-          let p2 =  ("00000" + fields[i][j][k]+1).slice(numLength);
-          let p3 =  ("00000" + fields[i][j][k]+2).slice(numLength);
-          let p4 =  ("00000" + fields[i][j][k]+3).slice(numLength);
+          let p1 =  (numTemplate + fields[i][j][k]).slice(-numLength);
+          let p2 =  (numTemplate + fields[i][j][k+1]).slice(-numLength);
+          let p3 =  (numTemplate + fields[i][j][k+2]).slice(-numLength);
+          let p4 =  (numTemplate + fields[i][j][k+3]).slice(-numLength);
 
           value = `${p1},${p2} vs ${p3},${p4}`;
         }
