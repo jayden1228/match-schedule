@@ -58,6 +58,17 @@ $(".genButton").click(function(){
         alert(result.message);
       }
     }});
+
+    $(document).on('click', '.teamNum', function(){
+          let val = $(this).html();
+          $(".teamNum").css('background-color', '#FFFFFF');
+          $(".teamNum").each(function(){
+            if($(this).html() == val) {
+              $(this).css('background-color', 'red');
+            }
+          })
+    });
+   
 });
 
 function scheduleHandle(input, mode, playerNum) {
@@ -91,14 +102,14 @@ function scheduleHandle(input, mode, playerNum) {
         if (mode == 1) {
           let p1 = (numTemplate + fields[i][j][k]).slice(-numLength);
           let p2 = (numTemplate + fields[i][j][k+1]).slice(-numLength);
-          value = `${p1} vs ${p2}`;
+          value = `<span class="teamNum">${p1}</span> vs <span class="teamNum">${p2}</span>`;
         }else {
           let p1 =  (numTemplate + fields[i][j][k]).slice(-numLength);
           let p2 =  (numTemplate + fields[i][j][k+1]).slice(-numLength);
           let p3 =  (numTemplate + fields[i][j][k+2]).slice(-numLength);
           let p4 =  (numTemplate + fields[i][j][k+3]).slice(-numLength);
 
-          value = `${p1},${p2} vs ${p3},${p4}`;
+          value = `<span class="teamNum">${p1}</span>,<span class="teamNum">${p2}</span> vs <span class="teamNum">${p3}</span>,<span class="teamNum">${p4}</span>`;
         }
         let data = {};
         data[key] = value;
